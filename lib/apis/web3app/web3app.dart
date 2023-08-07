@@ -29,6 +29,7 @@ class Web3App implements IWeb3App {
     IStore<Map<String, dynamic>>? store,
     Level logLevel = Level.nothing,
     HttpWrapper httpClient = const HttpWrapper(),
+    required void Function() onInitialized,
   }) async {
     final client = Web3App(
       core: Core(
@@ -41,7 +42,7 @@ class Web3App implements IWeb3App {
       metadata: metadata,
     );
     await client.init();
-
+    onInitialized();
     return client;
   }
 
