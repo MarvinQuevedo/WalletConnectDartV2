@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:test/test.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/i_sign_engine_app.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/i_sign_engine_common.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/i_sign_engine_wallet.dart';
-import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/i_sign_engine_app.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/i_sign_engine_common.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/i_sign_engine_wallet.dart';
+import 'package:walletconnect_dart_v2_i/walletconnect_dart_v2_i.dart';
 
 import '../../shared/shared_test_values.dart';
 import '../utils/sign_client_constants.dart';
@@ -172,7 +172,7 @@ void signUpdateSession({
           isA<WalletConnectError>().having(
             (e) => e.message,
             'message',
-            'Unsupported chains. update() namespaces chains don\'t satisfy requiredNamespaces chains for eip155',
+            'Unsupported chains. update() namespaces chains don\'t satisfy requiredNamespaces chains for eip155. Requested: [eip155:1, eip155:42161], Supported: [eip155:1]',
           ),
         ),
       );

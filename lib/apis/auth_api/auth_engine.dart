@@ -1,25 +1,25 @@
 import 'dart:async';
 
 import 'package:event/event.dart';
-import 'package:walletconnect_flutter_v2/apis/auth_api/i_auth_engine.dart';
-import 'package:walletconnect_flutter_v2/apis/auth_api/models/auth_client_events.dart';
-import 'package:walletconnect_flutter_v2/apis/auth_api/models/auth_client_models.dart';
-import 'package:walletconnect_flutter_v2/apis/auth_api/models/json_rpc_models.dart';
-import 'package:walletconnect_flutter_v2/apis/core/store/i_generic_store.dart';
-import 'package:walletconnect_flutter_v2/apis/auth_api/utils/address_utils.dart';
-import 'package:walletconnect_flutter_v2/apis/auth_api/utils/auth_api_validators.dart';
-import 'package:walletconnect_flutter_v2/apis/auth_api/utils/auth_constants.dart';
-import 'package:walletconnect_flutter_v2/apis/auth_api/utils/auth_signature.dart';
-import 'package:walletconnect_flutter_v2/apis/core/crypto/crypto_models.dart';
-import 'package:walletconnect_flutter_v2/apis/core/i_core.dart';
-import 'package:walletconnect_flutter_v2/apis/core/pairing/utils/pairing_models.dart';
-import 'package:walletconnect_flutter_v2/apis/core/pairing/utils/json_rpc_utils.dart';
-import 'package:walletconnect_flutter_v2/apis/models/basic_models.dart';
-import 'package:walletconnect_flutter_v2/apis/models/json_rpc_error.dart';
-import 'package:walletconnect_flutter_v2/apis/models/json_rpc_request.dart';
-import 'package:walletconnect_flutter_v2/apis/utils/constants.dart';
-import 'package:walletconnect_flutter_v2/apis/utils/errors.dart';
-import 'package:walletconnect_flutter_v2/apis/utils/method_constants.dart';
+import 'package:walletconnect_dart_v2_i/apis/auth_api/i_auth_engine.dart';
+import 'package:walletconnect_dart_v2_i/apis/auth_api/models/auth_client_events.dart';
+import 'package:walletconnect_dart_v2_i/apis/auth_api/models/auth_client_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/auth_api/models/json_rpc_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/store/i_generic_store.dart';
+import 'package:walletconnect_dart_v2_i/apis/auth_api/utils/address_utils.dart';
+import 'package:walletconnect_dart_v2_i/apis/auth_api/utils/auth_api_validators.dart';
+import 'package:walletconnect_dart_v2_i/apis/auth_api/utils/auth_constants.dart';
+import 'package:walletconnect_dart_v2_i/apis/auth_api/utils/auth_signature.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/crypto/crypto_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/i_core.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/pairing/utils/pairing_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/pairing/utils/json_rpc_utils.dart';
+import 'package:walletconnect_dart_v2_i/apis/models/basic_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/models/json_rpc_error.dart';
+import 'package:walletconnect_dart_v2_i/apis/models/json_rpc_request.dart';
+import 'package:walletconnect_dart_v2_i/apis/utils/constants.dart';
+import 'package:walletconnect_dart_v2_i/apis/utils/errors.dart';
+import 'package:walletconnect_dart_v2_i/apis/utils/method_constants.dart';
 
 class AuthEngine implements IAuthEngine {
   static const List<List<String>> defaultMethods = [
@@ -199,7 +199,7 @@ class AuthEngine implements IAuthEngine {
 
     final String reconstructed = formatAuthMessage(
       iss: payload.iss,
-      cacaoPayload: payload,
+      cacaoPayload: CacaoRequestPayload.fromCacaoPayload(payload),
     );
 
     final String walletAddress = AddressUtils.getDidAddress(payload.iss);
@@ -230,7 +230,7 @@ class AuthEngine implements IAuthEngine {
       final resp = AuthResponse(
         id: id,
         topic: responseTopic,
-        error: WalletConnectError(
+        error: const WalletConnectError(
           code: -1,
           message: 'Invalid signature',
         ),
@@ -287,7 +287,7 @@ class AuthEngine implements IAuthEngine {
       );
     } else {
       final Cacao cacao = Cacao(
-        h: CacaoHeader(),
+        h: const CacaoHeader(),
         p: CacaoPayload.fromRequestPayload(
           issuer: iss,
           payload: pendingRequest.cacaoPayload,

@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:test/test.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/i_sign_engine_app.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/i_sign_engine_common.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/i_sign_engine_wallet.dart';
-import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/i_sign_engine_app.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/i_sign_engine_common.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/i_sign_engine_wallet.dart';
+import 'package:walletconnect_dart_v2_i/walletconnect_dart_v2_i.dart';
 
 import '../../shared/shared_test_values.dart';
 import '../utils/engine_constants.dart';
@@ -63,7 +63,7 @@ void signRejectSession({
     test('deletes the proposal', () async {
       await clientB.rejectSession(
         id: TEST_PROPOSAL_VALID_ID,
-        reason: WalletConnectError(code: -1, message: 'reason'),
+        reason: const WalletConnectError(code: -1, message: 'reason'),
       );
 
       expect(
@@ -78,7 +78,7 @@ void signRejectSession({
       expect(
         () async => await clientB.rejectSession(
           id: TEST_APPROVE_ID_INVALID,
-          reason: WalletConnectError(code: -1, message: 'reason'),
+          reason: const WalletConnectError(code: -1, message: 'reason'),
         ),
         throwsA(
           isA<WalletConnectError>().having(
@@ -104,7 +104,7 @@ void signRejectSession({
       expect(
         () async => await clientB.rejectSession(
           id: TEST_PROPOSAL_EXPIRED_ID,
-          reason: WalletConnectError(code: -1, message: 'reason'),
+          reason: const WalletConnectError(code: -1, message: 'reason'),
         ),
         throwsA(
           isA<WalletConnectError>().having(

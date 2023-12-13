@@ -1,22 +1,21 @@
 import 'package:test/test.dart';
-import 'package:walletconnect_flutter_v2/apis/core/core.dart';
-import 'package:walletconnect_flutter_v2/apis/core/i_core.dart';
-import 'package:walletconnect_flutter_v2/apis/core/pairing/i_json_rpc_history.dart';
-import 'package:walletconnect_flutter_v2/apis/core/pairing/i_pairing.dart';
-import 'package:walletconnect_flutter_v2/apis/core/pairing/i_pairing_store.dart';
-import 'package:walletconnect_flutter_v2/apis/core/pairing/json_rpc_history.dart';
-import 'package:walletconnect_flutter_v2/apis/core/pairing/pairing.dart';
-import 'package:walletconnect_flutter_v2/apis/core/pairing/pairing_store.dart';
-import 'package:walletconnect_flutter_v2/apis/core/pairing/utils/pairing_models.dart';
-import 'package:walletconnect_flutter_v2/apis/core/relay_client/relay_client_models.dart';
-import 'package:walletconnect_flutter_v2/apis/core/store/generic_store.dart';
-import 'package:walletconnect_flutter_v2/apis/utils/constants.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/core.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/i_core.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/pairing/i_json_rpc_history.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/pairing/i_pairing.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/pairing/i_pairing_store.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/pairing/json_rpc_history.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/pairing/pairing.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/pairing/pairing_store.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/pairing/utils/pairing_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/relay_client/relay_client_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/store/generic_store.dart';
+import 'package:walletconnect_dart_v2_i/apis/utils/constants.dart';
 
 import '../shared/shared_test_utils.dart';
 import '../shared/shared_test_values.dart';
 
 void main() {
-
   group('Pairing store', () {
     late ICore coreA;
     late ICore coreB;
@@ -78,7 +77,7 @@ void main() {
         await history.init();
         await history.set(
           '1',
-          JsonRpcRecord(
+          const JsonRpcRecord(
             id: 1,
             topic: '1',
             method: 'eth_sign',
@@ -87,7 +86,7 @@ void main() {
         );
         await history.set(
           '2',
-          JsonRpcRecord(
+          const JsonRpcRecord(
             id: 2,
             topic: '1',
             method: 'eth_sign',
@@ -110,7 +109,7 @@ void main() {
         await topicToReceiverPublicKey.init();
         await topicToReceiverPublicKey.set(
           'abc',
-          ReceiverPublicKey(
+          const ReceiverPublicKey(
             topic: 'abc',
             publicKey: 'def',
             expiry: -1,

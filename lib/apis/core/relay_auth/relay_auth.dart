@@ -3,8 +3,8 @@ import 'dart:typed_data';
 
 import 'package:bs58/bs58.dart';
 import 'package:ed25519_edwards/ed25519_edwards.dart' as ed;
-import 'package:walletconnect_flutter_v2/apis/core/relay_auth/i_relay_auth.dart';
-import 'package:walletconnect_flutter_v2/apis/core/relay_auth/relay_auth_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/relay_auth/i_relay_auth.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/relay_auth/relay_auth_models.dart';
 
 class RelayAuth implements IRelayAuth {
   static const String multicodecEd25519Header = 'K36';
@@ -44,7 +44,7 @@ class RelayAuth implements IRelayAuth {
     required RelayAuthKeyPair keyPair,
     int? iat,
   }) async {
-    iat ??= DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    iat ??= DateTime.now().millisecondsSinceEpoch ~/ 1000 - 60;
     final JWTHeader header = JWTHeader();
     final String iss = encodeIss(keyPair.publicKeyBytes);
     final int exp = iat + ttl;
@@ -55,7 +55,7 @@ class RelayAuth implements IRelayAuth {
       iat,
       exp,
     );
-    final data = encodeData(
+    final Uint8List data = encodeData(
       JWTData(
         header,
         payload,

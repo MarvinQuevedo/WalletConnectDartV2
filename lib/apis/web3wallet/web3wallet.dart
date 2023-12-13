@@ -1,14 +1,13 @@
 import 'package:event/event.dart';
-import 'package:logger/logger.dart';
-import 'package:walletconnect_flutter_v2/apis/auth_api/auth_engine.dart';
-import 'package:walletconnect_flutter_v2/apis/core/relay_client/websocket/http_client.dart';
-import 'package:walletconnect_flutter_v2/apis/core/relay_client/websocket/i_http_client.dart';
-import 'package:walletconnect_flutter_v2/apis/core/store/generic_store.dart';
-import 'package:walletconnect_flutter_v2/apis/core/store/i_generic_store.dart';
-import 'package:walletconnect_flutter_v2/apis/core/store/i_store.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/i_sessions.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/sign_engine.dart';
-import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
+import 'package:walletconnect_dart_v2_i/apis/auth_api/auth_engine.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/relay_client/websocket/http_client.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/relay_client/websocket/i_http_client.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/store/generic_store.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/store/i_generic_store.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/store/i_store.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/i_sessions.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/sign_engine.dart';
+import 'package:walletconnect_dart_v2_i/walletconnect_dart_v2_i.dart';
 
 class Web3Wallet implements IWeb3Wallet {
   bool _initialized = false;
@@ -19,7 +18,7 @@ class Web3Wallet implements IWeb3Wallet {
     String pushUrl = WalletConnectConstants.DEFAULT_PUSH_URL,
     required PairingMetadata metadata,
     IStore<Map<String, dynamic>>? store,
-    Level logLevel = Level.nothing,
+    LogLevel logLevel = LogLevel.nothing,
     IHttpClient httpClient = const HttpWrapper(),
   }) async {
     final client = Web3Wallet(

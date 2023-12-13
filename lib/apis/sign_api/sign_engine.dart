@@ -1,29 +1,29 @@
 import 'dart:async';
 
 import 'package:event/event.dart';
-import 'package:walletconnect_flutter_v2/apis/core/i_core.dart';
-import 'package:walletconnect_flutter_v2/apis/core/pairing/i_pairing_store.dart';
-import 'package:walletconnect_flutter_v2/apis/core/pairing/utils/json_rpc_utils.dart';
-import 'package:walletconnect_flutter_v2/apis/core/pairing/utils/pairing_models.dart';
-import 'package:walletconnect_flutter_v2/apis/core/relay_client/relay_client_models.dart';
-import 'package:walletconnect_flutter_v2/apis/core/store/i_generic_store.dart';
-import 'package:walletconnect_flutter_v2/apis/models/basic_models.dart';
-import 'package:walletconnect_flutter_v2/apis/models/json_rpc_error.dart';
-import 'package:walletconnect_flutter_v2/apis/models/json_rpc_request.dart';
-import 'package:walletconnect_flutter_v2/apis/models/json_rpc_response.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/i_sessions.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/i_sign_engine.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/models/json_rpc_models.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/models/proposal_models.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/models/session_models.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/models/sign_client_events.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/models/sign_client_models.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/utils/sign_api_validator_utils.dart';
-import 'package:walletconnect_flutter_v2/apis/utils/constants.dart';
-import 'package:walletconnect_flutter_v2/apis/utils/errors.dart';
-import 'package:walletconnect_flutter_v2/apis/utils/method_constants.dart';
-import 'package:walletconnect_flutter_v2/apis/utils/namespace_utils.dart';
-import 'package:walletconnect_flutter_v2/apis/utils/walletconnect_utils.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/i_core.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/pairing/i_pairing_store.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/pairing/utils/json_rpc_utils.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/pairing/utils/pairing_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/relay_client/relay_client_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/store/i_generic_store.dart';
+import 'package:walletconnect_dart_v2_i/apis/models/basic_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/models/json_rpc_error.dart';
+import 'package:walletconnect_dart_v2_i/apis/models/json_rpc_request.dart';
+import 'package:walletconnect_dart_v2_i/apis/models/json_rpc_response.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/i_sessions.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/i_sign_engine.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/models/json_rpc_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/models/proposal_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/models/session_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/models/sign_client_events.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/models/sign_client_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/utils/sign_api_validator_utils.dart';
+import 'package:walletconnect_dart_v2_i/apis/utils/constants.dart';
+import 'package:walletconnect_dart_v2_i/apis/utils/errors.dart';
+import 'package:walletconnect_dart_v2_i/apis/utils/method_constants.dart';
+import 'package:walletconnect_dart_v2_i/apis/utils/namespace_utils.dart';
+import 'package:walletconnect_dart_v2_i/apis/utils/walletconnect_utils.dart';
 
 class SignEngine implements ISignEngine {
   static const List<List<String>> DEFAULT_METHODS = [
@@ -101,6 +101,13 @@ class SignEngine implements ISignEngine {
     await _resubscribeAll();
 
     _initialized = true;
+  }
+
+  @override
+  Future<void> checkAndExpire() async {
+    for (var session in sessions.getAll()) {
+      await core.expirer.checkAndExpire(session.topic);
+    }
   }
 
   @override
@@ -277,10 +284,6 @@ class SignEngine implements ISignEngine {
       relayProtocol ?? 'irn',
     );
 
-    final int expiry = WalletConnectUtils.calculateExpiry(
-      WalletConnectConstants.SEVEN_DAYS,
-    );
-
     // Respond to the proposal
     await core.pairing.sendResult(
       id,
@@ -302,6 +305,10 @@ class SignEngine implements ISignEngine {
     );
 
     await core.relayClient.subscribe(topic: sessionTopic);
+
+    final int expiry = WalletConnectUtils.calculateExpiry(
+      WalletConnectConstants.SEVEN_DAYS,
+    );
 
     SessionData session = SessionData(
       topic: sessionTopic,
@@ -353,7 +360,9 @@ class SignEngine implements ISignEngine {
       },
     );
 
-    session.acknowledged = acknowledged;
+    session = session.copyWith(
+      acknowledged: acknowledged,
+    );
 
     if (acknowledged && sessions.has(sessionTopic)) {
       // We directly update the latest value.
@@ -391,8 +400,7 @@ class SignEngine implements ISignEngine {
             reason.toJson(),
           ),
         );
-      } catch (_) {
-      }
+      } catch (_) {}
     }
     await _deleteProposal(id);
   }
@@ -563,25 +571,33 @@ class SignEngine implements ISignEngine {
     required WalletConnectError reason,
   }) async {
     _checkInitialized();
-    await _isValidDisconnect(topic);
+    try {
+      await _isValidDisconnect(topic);
 
-    if (sessions.has(topic)) {
-      // Send the request to delete the session, we don't care if it fails
-      try {
-        core.pairing.sendRequest(
-          topic,
-          MethodConstants.WC_SESSION_DELETE,
-          WcSessionDeleteRequest(
-            code: reason.code,
-            message: reason.message,
-            data: reason.data,
-          ),
-        );
-      } catch (_) {}
+      if (sessions.has(topic)) {
+        // Send the request to delete the session, we don't care if it fails
+        try {
+          core.pairing.sendRequest(
+            topic,
+            MethodConstants.WC_SESSION_DELETE,
+            WcSessionDeleteRequest(
+              code: reason.code,
+              message: reason.message,
+              data: reason.data,
+            ),
+          );
+        } catch (_) {}
 
-      await _deleteSession(topic);
-    } else {
-      await core.pairing.disconnect(topic: topic);
+        await _deleteSession(topic);
+      } else {
+        await core.pairing.disconnect(topic: topic);
+      }
+    } on WalletConnectError catch (error, s) {
+      core.logger.e(
+        '[$runtimeType] disconnectSession()',
+        error: error,
+        stackTrace: s,
+      );
     }
   }
 
@@ -704,6 +720,11 @@ class SignEngine implements ISignEngine {
   /// ---- PRIVATE HELPERS ---- ////
 
   Future<void> _resubscribeAll() async {
+    // If the relay is not connected, stop here
+    if (!core.relayClient.isConnected) {
+      return;
+    }
+
     // Subscribe to all the sessions
     for (final SessionData session in sessions.getAll()) {
       // print('Session: subscribing to ${session.topic}');
@@ -866,7 +887,7 @@ class SignEngine implements ISignEngine {
     JsonRpcRequest payload,
   ) async {
     try {
-      core.logger.v(
+      core.logger.t(
         '_onSessionProposeRequest, topic: $topic, payload: $payload',
       );
       final proposeRequest = WcSessionProposeRequest.fromJson(payload.params);
@@ -898,7 +919,7 @@ class SignEngine implements ISignEngine {
           );
         } on WalletConnectError catch (err) {
           // If they aren't, send an error
-          core.logger.v(
+          core.logger.t(
             '_onSessionProposeRequest WalletConnectError: $err',
           );
           await core.pairing.sendError(
@@ -995,7 +1016,10 @@ class SignEngine implements ISignEngine {
         topic: sProposalCompleter.pairingTopic,
         metadata: request.controller.metadata,
       );
-      await core.pairing.activate(topic: topic);
+      final pairing = core.pairing.getPairing(topic: topic);
+      if (pairing != null && !pairing.active) {
+        await core.pairing.activate(topic: topic);
+      }
 
       // Send the session back to the completer
       sProposalCompleter.completer.complete(session);
@@ -1339,6 +1363,7 @@ class SignEngine implements ISignEngine {
     core.expirer.onExpire.subscribe(_onExpired);
     core.pairing.onPairingDelete.subscribe(_onPairingDelete);
     core.pairing.onPairingExpire.subscribe(_onPairingDelete);
+    core.heartbeat.onPulse.subscribe(_heartbeatSubscription);
   }
 
   Future<void> _onRelayConnect(EventArgs? args) async {
@@ -1411,6 +1436,11 @@ class SignEngine implements ISignEngine {
       );
       return;
     }
+  }
+
+  void _heartbeatSubscription(EventArgs? args) async {
+    core.logger.i('SignEngine heartbeat received');
+    await checkAndExpire();
   }
 
   /// ---- Validation Helpers ---- ///
@@ -1665,9 +1695,7 @@ class SignEngine implements ISignEngine {
     return true;
   }
 
-  Future<bool> _isValidDisconnect(
-    String topic,
-  ) async {
+  Future<bool> _isValidDisconnect(String topic) async {
     await _isValidSessionOrPairingTopic(topic);
 
     return true;

@@ -1,5 +1,5 @@
 import 'package:event/event.dart';
-import 'package:walletconnect_flutter_v2/apis/core/relay_client/relay_client_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/relay_client/relay_client_models.dart';
 
 class PublishOptions {
   final Relay? relay;
@@ -30,6 +30,9 @@ abstract class IRelayClient {
   // Event<EventArgs> onSubscriptionDisabled();
   abstract final Event onSubscriptionSync;
   abstract final Event onSubscriptionResubscribed;
+
+  /// Returns true if the client is connected to a relay server
+  bool get isConnected;
 
   Future<void> init();
   Future<void> publish({

@@ -1,10 +1,10 @@
 import 'package:event/event.dart';
-import 'package:walletconnect_flutter_v2/apis/core/crypto/crypto_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/crypto/crypto_models.dart';
 
-import 'package:walletconnect_flutter_v2/apis/core/pairing/i_pairing_store.dart';
-import 'package:walletconnect_flutter_v2/apis/core/pairing/utils/pairing_models.dart';
-import 'package:walletconnect_flutter_v2/apis/models/json_rpc_error.dart';
-import 'package:walletconnect_flutter_v2/apis/models/json_rpc_request.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/pairing/i_pairing_store.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/pairing/utils/pairing_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/models/json_rpc_error.dart';
+import 'package:walletconnect_dart_v2_i/apis/models/json_rpc_request.dart';
 
 abstract class IPairing {
   abstract final Event<PairingEvent> onPairingCreate;
@@ -41,7 +41,9 @@ abstract class IPairing {
     required String topic,
     required PairingMetadata metadata,
   });
+  Future<void> checkAndExpire();
   List<PairingInfo> getPairings();
+  PairingInfo? getPairing({required String topic});
   Future<void> ping({required String topic});
   Future<void> disconnect({required String topic});
   IPairingStore getStore();

@@ -1,20 +1,20 @@
 import 'package:event/event.dart';
-import 'package:logger/logger.dart';
-import 'package:walletconnect_flutter_v2/apis/auth_api/auth_client.dart';
-import 'package:walletconnect_flutter_v2/apis/auth_api/auth_engine.dart';
-import 'package:walletconnect_flutter_v2/apis/auth_api/i_auth_client.dart';
-import 'package:walletconnect_flutter_v2/apis/auth_api/i_auth_engine.dart';
-import 'package:walletconnect_flutter_v2/apis/auth_api/models/auth_client_events.dart';
-import 'package:walletconnect_flutter_v2/apis/core/core.dart';
-import 'package:walletconnect_flutter_v2/apis/core/relay_client/websocket/http_client.dart';
-import 'package:walletconnect_flutter_v2/apis/core/relay_client/websocket/i_http_client.dart';
-import 'package:walletconnect_flutter_v2/apis/core/store/i_generic_store.dart';
-import 'package:walletconnect_flutter_v2/apis/auth_api/models/auth_client_models.dart';
-import 'package:walletconnect_flutter_v2/apis/core/i_core.dart';
-import 'package:walletconnect_flutter_v2/apis/core/store/i_store.dart';
-import 'package:walletconnect_flutter_v2/apis/models/basic_models.dart';
-import 'package:walletconnect_flutter_v2/apis/core/pairing/utils/pairing_models.dart';
-import 'package:walletconnect_flutter_v2/apis/utils/constants.dart';
+import 'package:walletconnect_dart_v2_i/apis/auth_api/auth_client.dart';
+import 'package:walletconnect_dart_v2_i/apis/auth_api/auth_engine.dart';
+import 'package:walletconnect_dart_v2_i/apis/auth_api/i_auth_client.dart';
+import 'package:walletconnect_dart_v2_i/apis/auth_api/i_auth_engine.dart';
+import 'package:walletconnect_dart_v2_i/apis/auth_api/models/auth_client_events.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/core.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/relay_client/websocket/http_client.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/relay_client/websocket/i_http_client.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/store/i_generic_store.dart';
+import 'package:walletconnect_dart_v2_i/apis/auth_api/models/auth_client_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/i_core.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/store/i_store.dart';
+import 'package:walletconnect_dart_v2_i/apis/models/basic_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/pairing/utils/pairing_models.dart';
+import 'package:walletconnect_dart_v2_i/apis/utils/constants.dart';
+import 'package:walletconnect_dart_v2_i/apis/utils/log_level.dart';
 
 class AuthClientTestWrapper implements IAuthEngine {
   bool _initialized = false;
@@ -44,7 +44,7 @@ class AuthClientTestWrapper implements IAuthEngine {
     String relayUrl = WalletConnectConstants.DEFAULT_RELAY_URL,
     required PairingMetadata metadata,
     IStore<Map<String, dynamic>>? store,
-    Level logLevel = Level.nothing,
+    LogLevel logLevel = LogLevel.nothing,
     IHttpClient httpClient = const HttpWrapper(),
   }) async {
     final client = AuthClientTestWrapper(

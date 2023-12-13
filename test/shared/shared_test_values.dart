@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:walletconnect_flutter_v2/apis/core/crypto/crypto_models.dart';
-import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/crypto/crypto_models.dart';
+import 'package:walletconnect_dart_v2_i/walletconnect_dart_v2_i.dart';
 
 final TEST_RELAY_URL =
     Platform.environment['RELAY_ENDPOINT'] ?? 'wss://relay.walletconnect.com';
@@ -84,6 +84,18 @@ final Set<String> availableEvents = {
 
 final Map<String, RequiredNamespace> requiredNamespacesInAvailable = {
   'namespace1:chain1': const RequiredNamespace(
+    methods: ['method1'],
+    events: ['event1'],
+  ),
+  'namespace2': const RequiredNamespace(
+    chains: ['namespace2:chain1', 'namespace2:chain2'],
+    methods: ['method3'],
+    events: ['event3'],
+  ),
+};
+
+final Map<String, RequiredNamespace> requiredNamespacesInAvailable2 = {
+  'namespace1': const RequiredNamespace(
     methods: ['method1'],
     events: ['event1'],
   ),

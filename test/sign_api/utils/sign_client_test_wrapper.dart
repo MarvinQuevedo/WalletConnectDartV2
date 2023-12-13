@@ -1,12 +1,12 @@
 import 'package:event/event.dart';
 import 'package:logger/logger.dart';
-import 'package:walletconnect_flutter_v2/apis/core/relay_client/websocket/http_client.dart';
-import 'package:walletconnect_flutter_v2/apis/core/relay_client/websocket/i_http_client.dart';
-import 'package:walletconnect_flutter_v2/apis/core/store/i_generic_store.dart';
-import 'package:walletconnect_flutter_v2/apis/core/store/i_store.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/sign_engine.dart';
-import 'package:walletconnect_flutter_v2/apis/sign_api/i_sessions.dart';
-import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/relay_client/websocket/http_client.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/relay_client/websocket/i_http_client.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/store/i_generic_store.dart';
+import 'package:walletconnect_dart_v2_i/apis/core/store/i_store.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/sign_engine.dart';
+import 'package:walletconnect_dart_v2_i/apis/sign_api/i_sessions.dart';
+import 'package:walletconnect_dart_v2_i/walletconnect_dart_v2_i.dart';
 
 class SignClientTestWrapper implements ISignEngine {
   bool _initialized = false;
@@ -53,7 +53,7 @@ class SignClientTestWrapper implements ISignEngine {
     String relayUrl = WalletConnectConstants.DEFAULT_RELAY_URL,
     required PairingMetadata metadata,
     IStore<Map<String, dynamic>>? store,
-    Level logLevel = Level.nothing,
+    Level logLevel = Level.off,
     IHttpClient httpClient = const HttpWrapper(),
   }) async {
     final client = SignClientTestWrapper(
@@ -378,4 +378,11 @@ class SignClientTestWrapper implements ISignEngine {
 
   @override
   IPairingStore get pairings => core.pairing.getStore();
+
+  @override
+  Future<void> checkAndExpire() async {
+    for (var session in sessions.getAll()) {
+      await core.expirer.checkAndExpire(session.topic);
+    }
+  }
 }
